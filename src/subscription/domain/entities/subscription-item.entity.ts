@@ -52,6 +52,8 @@ export class SubscriptionItem {
   deletedAt: Date
 
   toView(): ISubscriptionItemView {
+    console.log(this.createdAt instanceof Date)
+    console.log(typeof this.price)
     return SubscriptionItemView.create(this)
   }
 }

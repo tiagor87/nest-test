@@ -1,4 +1,5 @@
-import { Payer } from "../value-objects/payer.vo"
+import { AggregateRoot, IEvent } from "@nestjs/cqrs"
+import { IPayerView, Payer } from "../value-objects/payer.vo"
 import { ISubscriptionItemView, SubscriptionItem } from "./subscription-item.entity"
 
 export interface ISubscriptionView {
@@ -8,7 +9,7 @@ export interface ISubscriptionView {
   status: string
   type: string
   selectedPaymentMethod: string
-  payer?: Payer | null
+  payer?: IPayerView | null
   availablePaymentMethods: string
   lastInvoiceId: string
   intervalType: string
@@ -23,7 +24,7 @@ class SubscriptionView implements ISubscriptionView {
   status: string
   type: string
   selectedPaymentMethod: string
-  payer?: Payer | null
+  payer?: IPayerView | null
   availablePaymentMethods: string
   lastInvoiceId: string
   intervalType: string
@@ -38,7 +39,7 @@ class SubscriptionView implements ISubscriptionView {
     view.status = subscription.status
     view.type = subscription.type
     view.selectedPaymentMethod = subscription.selectedPaymentMethod
-    view.payer = subscription.payer
+    view.payer = subscription.payer?.toView()
     view.availablePaymentMethods = subscription.availablePaymentMethods
     view.lastInvoiceId = subscription.lastInvoiceId
     view.intervalType = subscription.intervalType
@@ -49,7 +50,11 @@ class SubscriptionView implements ISubscriptionView {
   }
 }
 
-export class Subscription {
+class SubscriptionCreated implements IEvent {
+  constructor(public readonly subscription: Subscription) {}
+}
+
+export class Subscription extends AggregateRoot {
   id: string
   accountId: string
   createdAt: Date
@@ -62,6 +67,12 @@ export class Subscription {
   intervalType: string
   intervalMultiplier: number
   items: Promise<SubscriptionItem[]>
+
+  static create() {
+    const subscription = new Subscription()
+    subscription.publish(new SubscriptionCreated(subscription))
+    return subscription
+  }
 
   toView(): Promise<ISubscriptionView> {
     return SubscriptionView.create(this)

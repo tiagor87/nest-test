@@ -1,20 +1,18 @@
-import { Controller, Get, Query } from '@nestjs/common'
-import { QueryDto } from '../dtos/query-dto'
-import { ISubscriptionRepository } from 'src/subscription/domain/repositories/subscription.repository'
+import { Controller, Get, Query, Scope } from '@nestjs/common'
+import { IFindAll, IFindAllHandler } from 'src/subscription/domain'
 import { ISubscriptionView } from 'src/subscription/domain/entities/subscription.entity'
 
-
-
-@Controller('subscription')
+@Controller({
+  path: 'subscriptions',
+  scope: Scope.REQUEST,
+})
 export class SubscriptionController {
   constructor(
-    private readonly subscriptionRepository: ISubscriptionRepository,
+    private readonly handler: IFindAllHandler,
   ) {}
 
   @Get()
-  async findAll(@Query() query: QueryDto): Promise<ISubscriptionView[]> {
-    console.log(query)
-    const subscriptions = await this.subscriptionRepository.findAll()
-    return await Promise.all(subscriptions.map((subscription) => subscription.toView()))
+  findAll(@Query() query: IFindAll): Promise<ISubscriptionView[]> {
+    return this.handler.execute(query)
   }
 }

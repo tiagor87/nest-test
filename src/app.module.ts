@@ -2,6 +2,8 @@ import { Module } from '@nestjs/common'
 import { SubscriptionModule } from './subscription/subscription.module'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { DefaultNamingStrategy } from 'typeorm'
+import { CqrsModule } from '@nestjs/cqrs'
+import { SharedModule } from './shared/shared.module';
 
 class SqalaNamingStrategy extends DefaultNamingStrategy {
   columnName(propertyName: string, customName: string, embeddedPrefixes: string[]): string {
@@ -30,6 +32,8 @@ class SqalaNamingStrategy extends DefaultNamingStrategy {
       entities: ['**/*.schema.js'],
       migrations: ['**/*.migration.js']
     }),
+    CqrsModule.forRoot(),
+    SharedModule,
   ],
   controllers: [],
   providers: [],
