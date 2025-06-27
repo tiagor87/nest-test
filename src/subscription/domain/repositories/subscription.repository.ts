@@ -1,7 +1,5 @@
-import { Subscription } from '../entities/subscription'
+import { Subscription } from '../entities/subscription.entity'
 
-export const SUBSCRIPTION_REPOSITORY_TYPE = 'SubscriptionRepository'
-
-export interface ISubscriptionRepository {
-  findAll(): Promise<Subscription[]>
+export abstract class ISubscriptionRepository {
+  abstract findAll(): Promise<Subscription[]>
 }

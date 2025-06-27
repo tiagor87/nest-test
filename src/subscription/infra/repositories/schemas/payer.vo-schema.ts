@@ -1,27 +1,25 @@
 import { EntitySchema } from 'typeorm'
+import { Payer } from 'src/subscription/domain'
 
-export const PayerSchema = new EntitySchema({
+export const PayerSchema = new EntitySchema<Payer>({
   name: 'Payer',
+  target: Payer,
   columns: {
     name: {
-      name: 'payerName',
       type: 'varchar',
       length: 50,
     },
     email: {
-      name: 'payerEmail',
       type: 'varchar',
       length: 100,
       nullable: true,
     },
     taxId: {
-      name: 'payerTaxId',
       type: 'varchar',
       length: 20,
       nullable: true,
     },
     mobile: {
-      name: 'payerMobile',
       type: 'varchar',
       length: 20,
       nullable: true,

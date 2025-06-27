@@ -1,15 +1,20 @@
-import { Subscription } from '../../../domain/entities/subscription'
+import { Subscription } from 'src/subscription/domain'
+import { SubscriptionItem } from 'src/subscription/domain/entities/subscription-item.entity'
 import { EntitySchema } from 'typeorm'
-import { PayerSchema } from './payer.schema'
+import { PayerSchema } from './payer.vo-schema'
 
 export const SubscriptionSchema = new EntitySchema<Subscription>({
   target: Subscription,
   name: 'Subscription',
   columns: {
-    accountId: {
+    id: {
       type: 'varchar',
       length: 36,
       primary: true,
+    },
+    accountId: {
+      type: 'varchar',
+      length: 36,
     },
     createdAt: {
       type: 'timestamp',
@@ -48,6 +53,14 @@ export const SubscriptionSchema = new EntitySchema<Subscription>({
   embeddeds: {
     payer: {
       schema: PayerSchema,
+    },
+  },
+  relations: {
+    items: {
+      type: 'one-to-many',
+      target: () => SubscriptionItem,
+      inverseSide: 'subscription',
+      lazy: true,
     },
   },
 })

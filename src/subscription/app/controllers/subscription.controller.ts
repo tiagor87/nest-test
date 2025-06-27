@@ -1,19 +1,20 @@
-import { Controller, Get, Inject, Query } from '@nestjs/common'
+import { Controller, Get, Query } from '@nestjs/common'
 import { QueryDto } from '../dtos/query-dto'
-import {
-  ISubscriptionRepository,
-  SUBSCRIPTION_REPOSITORY_TYPE,
-} from 'src/subscription/domain/repositories/subscription.repository'
-import { Subscription } from 'src/subscription/domain/entities/subscription'
+import { ISubscriptionRepository } from 'src/subscription/domain/repositories/subscription.repository'
+import { ISubscriptionView } from 'src/subscription/domain/entities/subscription.entity'
+
+
 
 @Controller('subscription')
 export class SubscriptionController {
   constructor(
-    @Inject(SUBSCRIPTION_REPOSITORY_TYPE)
     private readonly subscriptionRepository: ISubscriptionRepository,
   ) {}
+
   @Get()
-  findAll(@Query() query: QueryDto): Promise<Subscription[]> {
-    return this.subscriptionRepository.findAll()
+  async findAll(@Query() query: QueryDto): Promise<ISubscriptionView[]> {
+    console.log(query)
+    const subscriptions = await this.subscriptionRepository.findAll()
+    return await Promise.all(subscriptions.map((subscription) => subscription.toView()))
   }
 }
