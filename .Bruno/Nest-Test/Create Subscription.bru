@@ -1,0 +1,35 @@
+meta {
+  name: Create Subscription
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://localhost:6655/subscriptions
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "accountId": "123",
+    "createdAt": "2025-06-01T00:00:00.000Z",
+    "status": "active",
+    "type": "premium",
+    "selectedPaymentMethod": "credit_card",
+    "payer": null,
+    "availablePaymentMethods": "credit_card,paypal",
+    "lastInvoiceId": "inv_001",
+    "intervalType": "monthly",
+    "intervalMultiplier": 1,
+    "items": [
+      {
+        "id": "item1",
+        "name": "Product A",
+        "price": 100,
+        "currency": "USD",
+        "createdAt": "2025-06-01T00:00:00.000Z"
+      }
+    ]
+  }
+}
