@@ -35,6 +35,13 @@ export class Payer {
   taxId: string
   mobile: string
 
+  constructor(name: string, email: string, taxId: string, mobile: string) {
+    this.name = name
+    this.email = email
+    this.taxId = taxId
+    this.mobile = mobile
+  }
+
   toView(): IPayerView | null {
     return PayerView.create(this)
   }

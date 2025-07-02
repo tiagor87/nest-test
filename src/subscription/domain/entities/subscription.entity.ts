@@ -1,6 +1,11 @@
-import { AggregateRoot, IEvent } from "@nestjs/cqrs"
-import { IPayerView, Payer } from "../value-objects/payer.vo"
-import { ISubscriptionItemView, SubscriptionItem } from "./subscription-item.entity"
+import { AggregateRoot, IEvent } from '@nestjs/cqrs'
+import { IPayerView, Payer } from '../value-objects/payer.vo'
+import {
+  ISubscriptionItemView,
+  SubscriptionItem,
+} from './subscription-item.entity'
+import { DomainValidations } from '../validations/domain-validations'
+import { v4 } from 'uuid'
 
 export interface ISubscriptionView {
   id: string
@@ -68,10 +73,54 @@ export class Subscription extends AggregateRoot {
   intervalMultiplier: number
   items: Promise<SubscriptionItem[]>
 
-  static create() {
+  static create(params: {
+    accountId: string
+    createdAt: Date
+    status: string
+    type: string
+    selectedPaymentMethod: string
+    payer?: Payer | null
+    availablePaymentMethods: string
+    lastInvoiceId: string
+    intervalType: string
+    intervalMultiplier: number
+    items: Promise<SubscriptionItem[]>
+  }): Subscription {
     const subscription = new Subscription()
+    subscription.id = v4()
+    subscription.accountId = params.accountId
+    subscription.createdAt = params.createdAt
+    subscription.status = params.status
+    subscription.type = params.type
+    subscription.selectedPaymentMethod = params.selectedPaymentMethod
+    subscription.payer = params.payer
+    subscription.availablePaymentMethods = params.availablePaymentMethods
+    subscription.lastInvoiceId = params.lastInvoiceId
+    subscription.intervalType = params.intervalType
+    subscription.intervalMultiplier = params.intervalMultiplier
+    subscription.items = params.items
+    subscription.validate()
     subscription.publish(new SubscriptionCreated(subscription))
     return subscription
+  }
+
+  validate() {
+    const {
+      id,
+      accountId,
+      createdAt,
+      status,
+      type,
+      intervalType,
+      intervalMultiplier,
+    } = this
+    DomainValidations.ValidateNotNull(id, 'id')
+    DomainValidations.ValidateNotNull(accountId, 'accountId')
+    DomainValidations.ValidateNotNull(createdAt, 'createdAt')
+    DomainValidations.ValidateNotNull(status, 'status')
+    DomainValidations.ValidateNotNull(type, 'type')
+    DomainValidations.ValidateNotNull(intervalType, 'intervalType')
+    DomainValidations.ValidateNotNull(intervalMultiplier, 'intervalMultiplier')
   }
 
   toView(): Promise<ISubscriptionView> {
