@@ -113,6 +113,9 @@ export class Subscription extends AggregateRoot {
       type,
       intervalType,
       intervalMultiplier,
+      selectedPaymentMethod,
+      availablePaymentMethods,
+      lastInvoiceId,
     } = this
     DomainValidations.ValidateNotNull(id, 'id')
     DomainValidations.ValidateNotNull(accountId, 'accountId')
@@ -121,6 +124,15 @@ export class Subscription extends AggregateRoot {
     DomainValidations.ValidateNotNull(type, 'type')
     DomainValidations.ValidateNotNull(intervalType, 'intervalType')
     DomainValidations.ValidateNotNull(intervalMultiplier, 'intervalMultiplier')
+    
+    DomainValidations.ValidateMaxLength(id, 36, 'id')
+    DomainValidations.ValidateMaxLength(accountId, 36, 'accountId')
+    DomainValidations.ValidateMaxLength(status, 50, 'status')
+    DomainValidations.ValidateMaxLength(type, 50, 'type')
+    DomainValidations.ValidateMaxLength(selectedPaymentMethod, 50, 'selectedPaymentMethod')
+    DomainValidations.ValidateMaxLength(availablePaymentMethods, 255, 'availablePaymentMethods')
+    DomainValidations.ValidateMaxLength(lastInvoiceId, 36, 'lastInvoiceId')
+    DomainValidations.ValidateMaxLength(intervalType, 50, 'intervalType')
   }
 
   toView(): Promise<ISubscriptionView> {
