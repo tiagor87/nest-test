@@ -1,8 +1,10 @@
 import { Module } from '@nestjs/common'
-import { SubscriptionController } from './app/controllers/subscription.controller'
-import { ISubscriptionRepository } from './domain/repositories/subscription.repository'
-import { SubscriptionRepository } from './infra/repositories/subscription.repository'
-import { IFindAllHandler, FindAllHandler } from './domain'
+import { SubscriptionController } from './app'
+import { ISubscriptionRepository } from './domain'
+import { SubscriptionRepository } from './infra'
+import { IFindAllHandler, FindAllHandler, IGetSubscriptionHandler, GetSubscriptionHandler } from './domain'
+import { IUpdateSubscriptionHandler, UpdateSubscriptionHandler } from './domain/commands/update-subscription.handler'
+import { CreateSubscriptionHandler, ICreateSubscriptionHandler } from './domain/commands/create-subscription.handler'
 
 @Module({
   controllers: [SubscriptionController],
@@ -14,6 +16,18 @@ import { IFindAllHandler, FindAllHandler } from './domain'
     {
       provide: IFindAllHandler,
       useClass: FindAllHandler,
+    },
+    {
+      provide: IGetSubscriptionHandler,
+      useClass: GetSubscriptionHandler,
+    },
+    {
+      provide: IUpdateSubscriptionHandler,
+      useClass: UpdateSubscriptionHandler,
+    },
+    {
+      provide: ICreateSubscriptionHandler,
+      useClass: CreateSubscriptionHandler,
     },
   ],
 })

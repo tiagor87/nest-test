@@ -13,4 +13,19 @@ export class SubscriptionRepository extends ISubscriptionRepository {
   findAll(): Promise<Subscription[]> {
     return this.dataSource.manager.find(Subscription)
   }
+
+  async findById(id: string): Promise<Subscription | null> {
+    return await this.dataSource.manager.findOneBy(Subscription, { id })
+  }
+  async update(subscription: Subscription): Promise<void> {
+    await this.dataSource.manager.update(
+      Subscription,
+      subscription.id,
+      subscription,
+    )
+  }
+
+  async create(subscription: Subscription): Promise<void> {
+    await this.dataSource.manager.save(subscription)
+  }
 }

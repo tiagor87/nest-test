@@ -8,6 +8,7 @@ export const PayerSchema = new EntitySchema<Payer>({
     name: {
       type: 'varchar',
       length: 50,
+      nullable: true,
     },
     email: {
       type: 'varchar',
